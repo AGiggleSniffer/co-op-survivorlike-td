@@ -8,39 +8,7 @@ import { useEffect, useMemo, useRef } from "react";
 import { useGraph } from "@react-three/fiber";
 import { useGLTF, useAnimations } from "@react-three/drei";
 import { GLTF, SkeletonUtils } from "three-stdlib";
-
-export type WeaponName =
-	| "GrenadeLauncher"
-	| "AK"
-	| "Knife_1"
-	| "Knife_2"
-	| "Pistol"
-	| "Revolver"
-	| "Revolver_Small"
-	| "RocketLauncher"
-	| "ShortCannon"
-	| "SMG"
-	| "Shotgun"
-	| "Shovel"
-	| "Sniper"
-	| "Sniper_2";
-
-const WEAPONS = [
-	"GrenadeLauncher",
-	"AK",
-	"Knife_1",
-	"Knife_2",
-	"Pistol",
-	"Revolver",
-	"Revolver_Small",
-	"RocketLauncher",
-	"ShortCannon",
-	"SMG",
-	"Shotgun",
-	"Shovel",
-	"Sniper",
-	"Sniper_2",
-] as const;
+import { WeaponName, WEAPONS } from "../constants";
 
 export type ActionName =
 	| "Death"

@@ -2,34 +2,39 @@ import { useEffect, useState } from "react";
 import { Environment } from "@react-three/drei";
 import {
 	insertCoin,
+	isHost,
 	Joystick,
 	myPlayer,
 	onPlayerJoin,
 	PlayerState,
+	useMultiplayerState,
 } from "playroomkit";
 import Map from "./Map";
 import CharacterController from "./CharacterController";
+import Bullet from "./Bullet";
+import { BulletType } from "./shared.types";
 
 type Player = {
 	state: PlayerState;
 	joystick: Joystick;
 };
 
-type Bullet = {
-	id: number;
-	position: number;
-};
-
 const Experience = () => {
 	const [players, setPlayers] = useState<Player[]>([]);
-	const [bullets, setBullets] = useState<Bullet[]>([]);
-	const [hits, setHits] = useState<Bullet[]>([]);
 
-	const onFire = () => {
-		setBullets((bullet) => [...bullets, bullet] as Bullet[]);
+	const [bullets, setBullets] = useState<BulletType[]>([]);
+	const [networkBullets, setNetworkBullets] = useMultiplayerState(
+		"bullets",
+		[],
+	);
+
+	// const [hits, setHits] = useState<BulletType[]>([]);
+
+	const onFire = (bullet: BulletType) => {
+		setBullets((bullets) => [...bullets, bullet]);
 	};
 
-	const onHit = (bulletId: number) => {
+	const onHit = (bulletId: string) => {
 		setBullets((bullets) =>
 			bullets.filter((bullet) => bullet.id !== bulletId),
 		);
@@ -48,11 +53,11 @@ const Experience = () => {
 				type: "angular",
 				buttons: [{ id: "fire", label: "Fire" }],
 			});
-			const newPlayer = { state, joystick };
-			state.setState("health", 100);
-			state.setState("deaths", 0);
-			state.setState("kills", 0);
+
+			const newPlayer: Player = { state, joystick };
+
 			setPlayers((playersArray) => [...playersArray, newPlayer]);
+
 			state.onQuit(() => {
 				setPlayers((playersArray) =>
 					playersArray.filter((p) => p.state.id !== state.id),
@@ -64,6 +69,10 @@ const Experience = () => {
 	useEffect(() => {
 		start();
 	}, []);
+
+	useEffect(() => {
+		setNetworkBullets(bullets);
+	}, [bullets]);
 
 	return (
 		<>
@@ -82,23 +91,25 @@ const Experience = () => {
 				shadow-bias={-0.0001}
 			/>
 			<Map />
-			{players.map(({ state, joystick }, idx) => (
+			{players.map(({ state, joystick }) => (
 				<CharacterController
 					key={state.id}
-					position-x={idx * 2}
 					state={state}
 					joystick={joystick}
 					userPlayer={state.id === myPlayer().id}
 					onFire={onFire}
+					onKilled={() => {}}
 				/>
 			))}
-			{bullets.map((bullet) => (
-				<Bullet
-					key={bullet.id}
-					{...bullet}
-					onHit={() => onHit(bullet.id)}
-				/>
-			))}
+			{(isHost() ? bullets : (networkBullets as BulletType[])).map(
+				(bullet) => (
+					<Bullet
+						key={bullet.id}
+						{...bullet}
+						onHit={() => onHit(bullet.id)}
+					/>
+				),
+			)}
 			<Environment preset="sunset" />
 		</>
 	);

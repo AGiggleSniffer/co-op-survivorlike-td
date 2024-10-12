@@ -3,6 +3,7 @@ import Experience from "./components/Experience";
 import { SoftShadows } from "@react-three/drei";
 import { Suspense } from "react";
 import { Physics } from "@react-three/rapier";
+import { Bloom, EffectComposer } from "@react-three/postprocessing";
 
 function App() {
 	return (
@@ -15,6 +16,10 @@ function App() {
 					<Experience />
 				</Physics>
 			</Suspense>
+
+			<EffectComposer>
+				<Bloom luminanceThreshold={1} intensity={1.5} mipmapBlur />
+			</EffectComposer>
 		</Canvas>
 	);
 }
