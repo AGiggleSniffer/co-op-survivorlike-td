@@ -8,7 +8,7 @@ import { useEffect, useMemo, useRef } from "react";
 import { useGraph } from "@react-three/fiber";
 import { useGLTF, useAnimations } from "@react-three/drei";
 import { GLTF, SkeletonUtils } from "three-stdlib";
-import { WeaponName, WEAPONS } from "../constants";
+import { WeaponName, WEAPONS } from "../../constants";
 
 export type ActionName =
 	| "Death"
@@ -140,11 +140,10 @@ type GLTFResult = GLTF & {
 	animations: GLTFAction[];
 };
 
-type Props = {
+type Props = JSX.IntrinsicElements["group"] & {
 	color: string;
 	animation: ActionName;
 	weapon: WeaponName;
-	props?: JSX.IntrinsicElements["group"];
 };
 
 const CharacterPlayer = ({
@@ -225,7 +224,7 @@ const CharacterPlayer = ({
 	}, [nodes, clone]);
 
 	return (
-		<group ref={group} {...props} dispose={null}>
+		<group ref={group} {...props} dispose={null} >
 			<group name="Scene">
 				<group name="CharacterArmature">
 					<primitive object={nodes.Root} />

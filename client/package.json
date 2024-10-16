@@ -16,6 +16,7 @@
 		"@react-three/fiber": "^8.17.8",
 		"@react-three/postprocessing": "^2.16.3",
 		"@react-three/rapier": "^1.5.0",
+		"ecctrl": "^1.0.90",
 		"playroomkit": "^0.0.82",
 		"react": "^18.3.1",
 		"react-dom": "^18.3.1",

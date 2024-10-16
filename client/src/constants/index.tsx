@@ -1,4 +1,11 @@
-export const MOVEMENT_SPEED = 200 as const;
+import { degToRad } from "three/src/math/MathUtils.js";
+
+export const MOVEMENT_SPEED = 4.2 as const;
+export const WALK_SPEED = 200 as const;
+export const RUN_SPEED = 300 as const;
+export const JUMP_FORCE = 800 as const;
+export const ROTATION_SPEED = degToRad(1500);
+
 export const FIRE_RATE = 380 as const;
 
 export const WEAPON_OFFSET = {
@@ -32,3 +39,12 @@ export type WeaponName = keyof typeof Weapons;
 export const WEAPONS = Object.keys(Weapons).filter(
 	(value) => isNaN(Number(value)) === true,
 ) as WeaponName[];
+
+export const CONTROLS = {
+	forward: "forward",
+	back: "backward",
+	left: "leftward",
+	right: "rightward",
+	jump: "jump",
+} as const;
+

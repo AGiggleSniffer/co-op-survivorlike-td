@@ -6,7 +6,7 @@ type Props = {
 	name: string;
 };
 
-const PlayerInfo = ({ health, color, name }: Props) => {
+const CharacterInfo = ({ health, color, name }: Props) => {
 	return (
 		<Billboard position-y={2.5}>
 			<Text position-y={0.36} fontSize={0.4}>
@@ -25,4 +25,4 @@ const PlayerInfo = ({ health, color, name }: Props) => {
 	);
 };
 
-export default PlayerInfo;
+export default CharacterInfo;

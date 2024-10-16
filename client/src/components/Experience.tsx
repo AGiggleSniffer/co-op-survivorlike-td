@@ -9,10 +9,11 @@ import {
 	PlayerState,
 	useMultiplayerState,
 } from "playroomkit";
-import Map from "./Map";
-import CharacterController from "./CharacterController";
-import Bullet from "./Bullet";
 import { BulletType } from "./shared.types";
+import CharacterController from "./CharacterController/CharacterController";
+import Bullet from "./Bullet";
+import Map from "./Map";
+import TextController from "./CharacterController/TextController";
 
 type Player = {
 	state: PlayerState;
@@ -92,7 +93,15 @@ const Experience = () => {
 			/>
 			<Map />
 			{players.map(({ state, joystick }) => (
-				<CharacterController
+				// <CharacterController
+				// 	key={state.id}
+				// 	state={state}
+				// 	joystick={joystick}
+				// 	userPlayer={state.id === myPlayer().id}
+				// 	onFire={onFire}
+				// 	onKilled={() => {}}
+				// />
+				<TextController
 					key={state.id}
 					state={state}
 					joystick={joystick}
