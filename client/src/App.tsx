@@ -24,17 +24,12 @@ function App() {
 			<Canvas
 				shadows
 				camera={{ position: [0, 30, 0], fov: 30 }}
-				onPointerDown={(e) => {
-					if (e.pointerType === "mouse") {
-						(e.target as HTMLCanvasElement).requestPointerLock();
-					}
-				}}
 			>
 				<color attach="background" args={["#ececec"]} />
 				<SoftShadows size={42} />
 
 				<Suspense>
-					<Physics>
+					<Physics debug>
 						<Experience />
 					</Physics>
 				</Suspense>
