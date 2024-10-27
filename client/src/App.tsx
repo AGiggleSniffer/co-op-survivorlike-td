@@ -1,10 +1,9 @@
-import { Suspense, useEffect, useMemo, useRef } from "react";
+import { Suspense, useMemo, useRef } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Bloom, EffectComposer } from "@react-three/postprocessing";
 import { KeyboardControls, SoftShadows } from "@react-three/drei";
 import { Physics } from "@react-three/rapier";
 import Experience from "./components/Experience";
-import { CONTROLS } from "./constants";
 
 function App() {
 	const map = useMemo(
@@ -22,6 +21,7 @@ function App() {
 	return (
 		<KeyboardControls map={map}>
 			<Canvas
+				id="Canvas"
 				shadows
 				camera={{ position: [0, 30, 0], fov: 30 }}
 			>

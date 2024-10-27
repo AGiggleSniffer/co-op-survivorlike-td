@@ -92,14 +92,6 @@ const Experience = () => {
 			/>
 			<Map />
 			{players.map(({ state, joystick }) => (
-				// <CharacterController
-				// 	key={state.id}
-				// 	state={state}
-				// 	joystick={joystick}
-				// 	userPlayer={state.id === myPlayer().id}
-				// 	onFire={onFire}
-				// 	onKilled={() => {}}
-				// />
 				<CharacterController
 					key={state.id}
 					state={state}

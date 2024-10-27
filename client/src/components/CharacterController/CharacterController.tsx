@@ -1,17 +1,17 @@
-import { Joystick, PlayerState } from "playroomkit";
+import { isHost, Joystick, PlayerState } from "playroomkit";
 import { useEffect, useRef, useState } from "react";
 import { BulletType } from "../shared.types";
 import CharacterPlayer, { ActionName } from "./CharacterPlayer";
 import { CONTROLS, WALK_SPEED, WeaponName } from "../../constants";
-import { ThreeEvent, useFrame, useThree } from "@react-three/fiber";
+import { extend, useFrame, useThree } from "@react-three/fiber";
 import {
 	CapsuleCollider,
 	RapierRigidBody,
 	RigidBody,
 } from "@react-three/rapier";
-import { CameraControls, useKeyboardControls } from "@react-three/drei";
-import { Euler, Quaternion, Vector3 } from "three";
-import { PointerLockControls } from "@react-three/drei";
+import { OrbitControls, useKeyboardControls } from "@react-three/drei";
+import { Vector3 } from "three";
+import { PointerLockControls } from "three/addons/controls/PointerLockControls.js";
 
 type Props = {
 	state: PlayerState;
@@ -21,7 +21,6 @@ type Props = {
 	onKilled: (id: string, p: string) => void;
 	props?: JSX.IntrinsicElements["group"];
 };
-
 const CharacterController = ({
 	state,
 	joystick,
@@ -37,45 +36,30 @@ const CharacterController = ({
 	const forwardPressed = useKeyboardControls(
 		(state) => state[CONTROLS.forward],
 	);
-	const controls = useRef<CameraControls>(null);
-
-	// const camera = useThree((state) => state.camera);
-	// const canvas = document.getElementById("canvas");
-
-	// useEffect(() => {
-	// 	const change = () => console.log("Controls Change");
-
-	// 	controls.addEventListener("change", change);
-	// 	canvas?.addEventListener("click", start);
-
-	// 	return () => {
-	// 		controls.removeEventListener("change", change);
-	// 		canvas?.removeEventListener("click", start);
-	// 	};
-	// }, []);
 
 	const [animation, setAnimation] = useState<ActionName>("Idle");
 	const [weapon] = useState<WeaponName>("AK");
 	const rb = useRef<RapierRigidBody>(null);
 
-	const [mouse, setMouse] = useState({ x: 0, y: 0 });
+	const { camera } = useThree();
 
 	useEffect(() => {
-		const moveMouse = (e: MouseEvent) => {
-			const { innerWidth, innerHeight } = window;
-			const x = (e.clientX / innerWidth) * 2 - 1;
-			const y = -(e.clientY / innerHeight) * 2 + 1;
-			setMouse({ x, y });
+		const canvas = document.getElementById("Canvas");
+
+		const controls = new PointerLockControls(camera, canvas);
+		const click = () => controls.lock();
+		const lock = () => {
+			console.log("locked");
 		};
 
-		document.addEventListener("mousemove", moveMouse);
-
+		controls.domElement?.addEventListener("click", click);
+		controls.addEventListener("lock", lock);
 		return () => {
-			document.removeEventListener("mousemove", moveMouse);
+			controls.domElement?.removeEventListener("click", click);
+			controls.removeEventListener("lock", lock);
 		};
 	}, []);
 
-	const offset = new Vector3(0, 10, 0);
 	useFrame((_, delta) => {
 		if (!rb.current) return;
 		if (!userPlayer) {
@@ -102,51 +86,21 @@ const CharacterController = ({
 
 		const playerPos = rb.current.translation();
 
-		controls.current?.setLookAt(
-			offset.x,
-			offset.y,
-			offset.z,
-			playerPos.x,
-			playerPos.y,
-			playerPos.z,
-			true,
-		);
-
-		const euler = new Euler(0, mouse.x * Math.PI, 0);
-		const quaternion = new Quaternion().setFromEuler(euler);
-		rb.current.setRotation(quaternion, true);
-
-		console.log(mouse.x, mouse.y);
-
 		state.setState("pos", playerPos);
 		state.setState("rot", playerPos);
 	});
 
 	return (
 		<>
-			{/* {userPlayer && <CameraControls ref={controls} />} */}
-			<group position={[0, 5, 0]}>
-				{userPlayer ? (
+			{isHost() ? (
+				<OrbitControls />
+			) : (
+				<group position={[0, 5, 0]}>
 					<RigidBody
 						ref={rb}
 						colliders={false}
 						enabledRotations={[false, false, false]}
-					>
-						<group>
-							<CharacterPlayer
-								color={state.getProfile().color.hexString}
-								animation={animation}
-								weapon={weapon}
-								position={[0, -1.28, 0]}
-							/>
-						</group>
-						<CapsuleCollider args={[0.7, 0.6]} />
-					</RigidBody>
-				) : (
-					<RigidBody
-						ref={rb}
-						colliders={false}
-						type="kinematicPosition"
+						type={userPlayer ? "dynamic" : "kinematicPosition"}
 					>
 						<CharacterPlayer
 							color={state.getProfile().color.hexString}
@@ -156,8 +110,8 @@ const CharacterController = ({
 						/>
 						<CapsuleCollider args={[0.7, 0.6]} />
 					</RigidBody>
-				)}
-			</group>
+				</group>
+			)}
 		</>
 	);
 };
