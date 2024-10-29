@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Environment } from "@react-three/drei";
+import { Environment, OrbitControls } from "@react-three/drei";
 import {
 	insertCoin,
 	isHost,

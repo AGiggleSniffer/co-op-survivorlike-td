@@ -1,10 +1,8 @@
-import { degToRad } from "three/src/math/MathUtils.js";
-
 export const MOVEMENT_SPEED = 4.2 as const;
 export const WALK_SPEED = 20 as const;
 export const RUN_SPEED = 300 as const;
 export const JUMP_FORCE = 800 as const;
-export const ROTATION_SPEED = degToRad(1500);
+export const ROTATION_SPEED = 0.01 as const;
 
 export const FIRE_RATE = 380 as const;
 
